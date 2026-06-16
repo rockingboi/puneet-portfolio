@@ -18,16 +18,40 @@ const HeroSection = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.muted = false;
-    video.volume = 1;
-    video.play().catch(() => {});
+    // Browsers block unmuted autoplay — start muted so playback works in production.
+    const startPlayback = async () => {
+      video.muted = true;
+      video.volume = 1;
+      try {
+        await video.play();
+      } catch {
+        // Retry once after a tick (mobile Safari edge case)
+        window.setTimeout(() => {
+          video.play().catch(() => {});
+        }, 100);
+      }
+    };
+
+    startPlayback();
+
+    const unmuteOnInteraction = () => {
+      if (video.ended) return;
+      video.muted = false;
+      video.volume = 1;
+      video.play().catch(() => {});
+    };
+
+    window.addEventListener('pointerdown', unmuteOnInteraction, { once: true });
 
     const onEnded = () => {
       video.muted = true;
     };
 
     video.addEventListener('ended', onEnded);
-    return () => video.removeEventListener('ended', onEnded);
+    return () => {
+      video.removeEventListener('ended', onEnded);
+      window.removeEventListener('pointerdown', unmuteOnInteraction);
+    };
   }, []);
 
   // Snap-scroll: one wheel tick / keypress while at top → jump to About
@@ -71,6 +95,7 @@ const HeroSection = () => {
       <video
         ref={videoRef}
         autoPlay
+        muted
         playsInline
         preload="auto"
         className="absolute inset-0 h-full w-full object-cover"
