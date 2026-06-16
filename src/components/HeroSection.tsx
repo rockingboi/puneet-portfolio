@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import FadeIn from './FadeIn';
 
 const RESUME_URL = '/PuneetSharma_Resume.pdf';
@@ -13,19 +13,38 @@ const NAV_LINKS = [
 
 const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const [showSoundHint, setShowSoundHint] = useState(true);
+
+  const enableSound = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || video.ended) return;
+
+    video.muted = false;
+    video.removeAttribute('muted');
+    video.volume = 1;
+    video.currentTime = 0;
+    video.play().catch(() => {});
+
+    setIsMuted(false);
+    setShowSoundHint(false);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowSoundHint(false), 6000);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Browsers block unmuted autoplay — start muted so playback works in production.
     const startPlayback = async () => {
       video.muted = true;
       video.volume = 1;
       try {
         await video.play();
       } catch {
-        // Retry once after a tick (mobile Safari edge case)
         window.setTimeout(() => {
           video.play().catch(() => {});
         }, 100);
@@ -34,24 +53,13 @@ const HeroSection = () => {
 
     startPlayback();
 
-    const unmuteOnInteraction = () => {
-      if (video.ended) return;
-      video.muted = false;
-      video.volume = 1;
-      video.play().catch(() => {});
-    };
-
-    window.addEventListener('pointerdown', unmuteOnInteraction, { once: true });
-
     const onEnded = () => {
       video.muted = true;
+      setIsMuted(true);
     };
 
     video.addEventListener('ended', onEnded);
-    return () => {
-      video.removeEventListener('ended', onEnded);
-      window.removeEventListener('pointerdown', unmuteOnInteraction);
-    };
+    return () => video.removeEventListener('ended', onEnded);
   }, []);
 
   // Snap-scroll: one wheel tick / keypress while at top → jump to About
@@ -165,7 +173,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <div className="flex items-end px-6 md:px-10 pb-7 sm:pb-10 md:pb-12">
+        <div className="flex items-end justify-between px-6 md:px-10 pb-7 sm:pb-10 md:pb-12">
           <FadeIn delay={1.1} y={20}>
             <a href="#about" aria-label="Scroll to next section" className="group flex flex-col items-center gap-3">
               <span className="text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.35em] text-white/70 transition group-hover:text-white">
@@ -179,6 +187,33 @@ const HeroSection = () => {
               </div>
             </a>
           </FadeIn>
+
+          {isMuted && (
+            <FadeIn delay={1.1} y={20}>
+              <div className="flex items-center gap-3">
+                {showSoundHint && (
+                  <span
+                    className="hidden sm:inline text-[10px] font-medium uppercase tracking-[0.25em] text-white/80"
+                    style={{ animation: 'pulseFade 2s ease-in-out infinite' }}
+                  >
+                    Tap for sound
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={enableSound}
+                  aria-label="Enable video sound"
+                  className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 hover:scale-110"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <line x1="23" y1="9" x2="17" y2="15" />
+                    <line x1="17" y1="9" x2="23" y2="15" />
+                  </svg>
+                </button>
+              </div>
+            </FadeIn>
+          )}
         </div>
       </div>
 
@@ -186,6 +221,10 @@ const HeroSection = () => {
         @keyframes scrollLine {
           0% { transform: translateY(-100%); }
           100% { transform: translateY(200%); }
+        }
+        @keyframes pulseFade {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
         }
       `}</style>
     </section>
