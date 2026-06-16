@@ -1,25 +1,29 @@
-# Harsh Goyal — Developer & Designer Portfolio
+# Puneet Sharma — AI/ML Engineer Portfolio
 
-A dark-themed personal portfolio for **Harsh Goyal** — Computer Science graduate from NSUT, currently a Content R&D Trainee at PhysicsWallah. Focused on UI/UX, front-end development, and GenAI integration.
+Personal portfolio for **Puneet Sharma** — B.Tech Computer Science (AI & ML) at GLA University. Focused on Computer Vision, LLM systems, RAG pipelines, and end-to-end AI deployment.
 
-Built with **React + TypeScript + Vite + Tailwind CSS + Framer Motion**. Designed for one-click deployment on **Vercel**.
+**Live site:** [puneet-portfolio-lac.vercel.app](https://puneet-portfolio-lac.vercel.app)
+
+Built with **React + TypeScript + Vite + Tailwind CSS + Framer Motion**. Deployed on **Vercel** with GitHub Actions auto-deploy.
 
 ## Stack
 
 - React 18 / TypeScript
-- Vite (build tool)
-- Tailwind CSS (utility-first styling)
-- Framer Motion (animations + scroll effects)
-- Lucide React (icons)
-- Kanit font (Google Fonts, weights 300–900)
+- Vite
+- Tailwind CSS
+- Framer Motion
+- Lucide React
+- Kanit font (Google Fonts)
 
 ## Sections
 
-1. **Hero** — name, tagline, magnetic-hover portrait
-2. **About** — bio + skills grouped by Languages / Frameworks / Tools / AI
-3. **Services** — UI/UX Design, Web Design, Front-end Development, GenAI Integration
-4. **Projects** — sticky-stacking cards for AI Tutor, PiLearn, ResumeIQ, Notch
-5. **Contact** — Email, WhatsApp, LinkedIn, GitHub
+1. **Hero** — name, tagline, cinematic video background, resume download
+2. **About** — profile summary + skills (CV, LLM/RAG, ML, systems)
+3. **Experience** — work history + education
+4. **Projects** — grouped by AI, AI + IoT, and Data Science / Analytics
+5. **Expertise** — core technical focus areas
+6. **Achievements** — hackathons, research, leadership
+7. **Contact** — email, WhatsApp, LinkedIn, GitHub, resume download
 
 ## Run locally
 
@@ -30,51 +34,84 @@ npm run build    # production build → /dist
 npm run preview  # serve /dist locally
 ```
 
-## Deploy to Vercel
+## Deploy
 
-Push to GitHub → import the repo at [vercel.com/new](https://vercel.com/new) → click Deploy. No environment variables needed.
+Pushes to `main` on [github.com/rockingboi/puneet-portfolio](https://github.com/rockingboi/puneet-portfolio) trigger a production deploy via GitHub Actions (`.github/workflows/deploy.yml`).
+
+Manual deploy:
+
+```bash
+npx vercel deploy --prod
+```
 
 ## Project structure
 
 ```
 src/
-├── App.tsx                    # composes all sections
-├── main.tsx                   # React entry
-├── index.css                  # global styles + .hero-heading gradient
+├── App.tsx
+├── main.tsx
+├── index.css
 └── components/
-    ├── HeroSection.tsx        # navbar, massive heading, magnetic portrait
-    ├── AboutSection.tsx       # bio, animated text, skills grid
-    ├── ServicesSection.tsx    # white section, 4 numbered services
-    ├── ProjectsSection.tsx    # sticky-stacking project cards
-    ├── ContactSection.tsx     # 4 contact methods with icons
-    │
-    ├── ContactButton.tsx      # gradient pill CTA
-    ├── LiveProjectButton.tsx  # ghost outline pill
-    ├── FadeIn.tsx             # whileInView animation wrapper
-    ├── Magnet.tsx             # mouse-following magnetic hover
-    └── AnimatedText.tsx       # char-by-char scroll-driven reveal
+    ├── HeroSection.tsx
+    ├── AboutSection.tsx
+    ├── ExperienceSection.tsx
+    ├── ProjectsSection.tsx
+    ├── ServicesSection.tsx      # Expertise section
+    ├── AchievementsSection.tsx
+    ├── ContactSection.tsx
+    ├── ContactButton.tsx
+    ├── LiveProjectButton.tsx
+    ├── FadeIn.tsx
+    └── AnimatedText.tsx
+
+public/
+├── intro.mp4
+└── PuneetSharma_Resume.pdf
 ```
 
 ## Featured projects
 
-| Project | Live | Built with |
-|---|---|---|
-| ResumeIQ | [resumeiq-harsh.vercel.app](https://resumeiq-harsh.vercel.app) | React, Gemini API, Vercel |
-| Notch | [notch-zeta.vercel.app](https://notch-zeta.vercel.app) | React, Tailwind, Framer Motion |
+### AI
+| Project | Link |
+|---|---|
+| IntelliVision | Computer Vision — YOLOv8, DeepSORT, OpenCV |
+| DocuMind AI | [GitHub](https://github.com/rockingboi/LLM-and-RAG-using-DSPY-FRAEWORK) |
+| AI Coaching Voice Assistant | [GitHub](https://github.com/rockingboi/ai-coaching-voice-assistance) |
+
+### AI + IoT
+| Project | Link |
+|---|---|
+| AgroSmart AI | [GitHub](https://github.com/rockingboi/smart-farming-app) |
+| Smart Home Energy Management | [GitHub](https://github.com/rockingboi/Smart-Home-Energy-Management) |
+
+### Data Science / Analytics
+| Project | Link |
+|---|---|
+| SmartEnergy AI | [GitHub](https://github.com/rockingboi/Smart-Home-Energy-Management) |
+| Coffee Sales Excel Dashboard | [GitHub](https://github.com/rockingboi/Coffee-sales-Excel-Dashboard) |
+| HR Analytics Dashboard | [GitHub](https://github.com/rockingboi/HR-Analytics-Dashboard) |
 
 ## Customisation
 
 | Want to change | Open this file |
 |---|---|
 | Name, nav links, hero text | `src/components/HeroSection.tsx` |
-| About paragraph, skills list | `src/components/AboutSection.tsx` |
-| Services list | `src/components/ServicesSection.tsx` (`SERVICES` array) |
-| Projects, screenshots, live URLs | `src/components/ProjectsSection.tsx` (`PROJECTS` array) |
-| Contact methods | `src/components/ContactSection.tsx` (`CONTACT_METHODS` array) |
-| Project screenshots | drop new images in `public/` and reference as `/filename.png` |
-| Brand gradient, font, dark colour | `src/index.css` and `tailwind.config.js` |
-| Page title, meta description | `index.html` |
+| About paragraph, skills | `src/components/AboutSection.tsx` |
+| Work history, education | `src/components/ExperienceSection.tsx` |
+| Projects by section | `src/components/ProjectsSection.tsx` (`PROJECT_GROUPS`) |
+| Expertise areas | `src/components/ServicesSection.tsx` (`SERVICES`) |
+| Achievements | `src/components/AchievementsSection.tsx` |
+| Contact methods | `src/components/ContactSection.tsx` |
+| Resume PDF | replace `public/PuneetSharma_Resume.pdf` |
+| Hero video | replace `public/intro.mp4` |
+| Page title, meta | `index.html` |
 
-## Credits
+## Contact
 
-Designed & built by **Harsh Goyal** · [LinkedIn](https://www.linkedin.com/in/harsh-goyal-7900b2256/) · [GitHub](https://github.com/harshgoyal27)
+- **Email:** puneet89upadhyay@gmail.com
+- **LinkedIn:** [puneet-sharma17](https://www.linkedin.com/in/puneet-sharma17/)
+- **GitHub:** [rockingboi](https://github.com/rockingboi)
+
+---
+
+Built by **Puneet Sharma** · Mathura, India
