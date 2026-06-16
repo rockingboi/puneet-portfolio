@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import FadeIn from './FadeIn';
 
 const RESUME_URL = '/PuneetSharma_Resume.pdf';
@@ -13,31 +13,45 @@ const NAV_LINKS = [
 
 const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const playWithSound = () => {
-      video.muted = false;
-      video.defaultMuted = false;
+    // Autoplay is most reliable when starting muted.
+    const startPlayback = () => {
+      video.muted = true;
+      video.defaultMuted = true;
       video.volume = 1;
       video.play().catch(() => {});
     };
 
-    playWithSound();
-    video.addEventListener('loadeddata', playWithSound, { once: true });
+    startPlayback();
+    video.addEventListener('loadeddata', startPlayback, { once: true });
 
     const onEnded = () => {
       video.muted = true;
+      setMuted(true);
     };
 
     video.addEventListener('ended', onEnded);
     return () => {
       video.removeEventListener('ended', onEnded);
-      video.removeEventListener('loadeddata', playWithSound);
+      video.removeEventListener('loadeddata', startPlayback);
     };
   }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = muted;
+    video.defaultMuted = muted;
+    if (!muted) {
+      video.volume = 1;
+      video.play().catch(() => {});
+    }
+  }, [muted]);
 
   // Snap-scroll: one wheel tick / keypress while at top → jump to About
   useEffect(() => {
@@ -80,6 +94,7 @@ const HeroSection = () => {
       <video
         ref={videoRef}
         autoPlay
+        muted
         playsInline
         preload="auto"
         className="absolute inset-0 h-full w-full object-cover"
@@ -92,8 +107,8 @@ const HeroSection = () => {
 
       <div className="relative z-10 flex h-full flex-col">
         <FadeIn delay={0} y={-20} className="relative">
-          <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-8">
-            <ul className="flex items-center gap-5 sm:gap-8 md:gap-12">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-6 md:px-10 pt-6 md:pt-8">
+            <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 sm:gap-x-8 md:gap-x-12">
               {NAV_LINKS.map((link) => (
                 <li key={link.label}>
                   <a
@@ -106,7 +121,7 @@ const HeroSection = () => {
               ))}
             </ul>
 
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-3 sm:gap-4">
               <a
                 href={RESUME_URL}
                 download={RESUME_FILENAME}
@@ -149,7 +164,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        <div className="flex items-end px-6 md:px-10 pb-7 sm:pb-10 md:pb-12">
+        <div className="flex items-end justify-between gap-4 px-6 md:px-10 pb-7 sm:pb-10 md:pb-12">
           <FadeIn delay={1.1} y={20}>
             <a href="#about" aria-label="Scroll to next section" className="group flex flex-col items-center gap-3">
               <span className="text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.35em] text-white/70 transition group-hover:text-white">
@@ -162,6 +177,46 @@ const HeroSection = () => {
                 />
               </div>
             </a>
+          </FadeIn>
+
+          <FadeIn delay={1.1} y={20}>
+            <button
+              type="button"
+              onClick={() => setMuted((m) => !m)}
+              aria-label={muted ? 'Unmute video' : 'Mute video'}
+              className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 hover:scale-110"
+            >
+              {muted ? (
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <line x1="23" y1="9" x2="17" y2="15" />
+                  <line x1="17" y1="9" x2="23" y2="15" />
+                </svg>
+              ) : (
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                </svg>
+              )}
+            </button>
           </FadeIn>
         </div>
       </div>
